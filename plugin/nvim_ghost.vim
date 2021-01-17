@@ -10,6 +10,7 @@ let g:nvim_ghost_installation_dir = expand('<sfile>:h:h')
 let g:nvim_ghost_binary_path  =  g:nvim_ghost_installation_dir . (has('win32') ? '\nvim-ghost-binary.exe' :  '/nvim-ghost-binary')
 let g:nvim_ghost_script_path  =  g:nvim_ghost_installation_dir . (has('win32') ? '\scripts' :  '/scripts')
 let g:nvim_ghost_logging_enabled = get(g:,'nvim_ghost_logging_enabled', 0)
+let g:nvim_ghost_autostart = 0
 
 if g:nvim_ghost_logging_enabled
   let $NVIM_GHOST_LOGGING_ENABLED = 1
@@ -23,10 +24,12 @@ if !filereadable(g:nvim_ghost_binary_path)
 endif
 
 augroup nvim_ghost
-  autocmd!
-  autocmd UIEnter     * call nvim_ghost#start_server()
-  autocmd FocusGained * call nvim_ghost#request_focus()
-  autocmd VimLeavePre * call nvim_ghost#session_closed()
+    autocmd!
+  if g:nvim_ghost_autostart
+    autocmd UIEnter     * call nvim_ghost#start_server()
+  endif
+    autocmd FocusGained * call nvim_ghost#request_focus()
+    autocmd VimLeavePre * call nvim_ghost#session_closed()
 augroup END
 
 " :doau causes error if augroup not defined
